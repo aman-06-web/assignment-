@@ -1,0 +1,242 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font-sans)}
+.dash{padding:1rem 0}
+.section-title{font-size:13px;font-weight:500;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:.06em;margin:1.5rem 0 .75rem}
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:1.5rem}
+.kpi{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:.85rem 1rem}
+.kpi-label{font-size:12px;color:var(--color-text-secondary);margin-bottom:4px}
+.kpi-val{font-size:22px;font-weight:500;color:var(--color-text-primary)}
+.kpi-sub{font-size:11px;color:var(--color-text-tertiary);margin-top:2px}
+.charts-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:1.5rem}
+.chart-card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1rem}
+.chart-title{font-size:13px;font-weight:500;color:var(--color-text-primary);margin-bottom:.75rem}
+.chart-wrap{position:relative}
+.legend{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:8px;font-size:11px;color:var(--color-text-secondary)}
+.leg-dot{width:9px;height:9px;border-radius:2px;display:inline-block;margin-right:4px;vertical-align:middle}
+.tabs{display:flex;gap:6px;margin-bottom:1rem}
+.tab{padding:5px 14px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-tertiary);font-size:12px;cursor:pointer;background:var(--color-background-primary);color:var(--color-text-secondary);transition:.15s}
+.tab.active{background:var(--color-background-secondary);color:var(--color-text-primary);border-color:var(--color-border-primary);font-weight:500}
+.insight-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:1.5rem}
+.insight-card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:.9rem 1rem}
+.ins-icon{font-size:18px;margin-bottom:6px;color:var(--color-text-secondary)}
+.ins-title{font-size:12px;font-weight:500;color:var(--color-text-primary);margin-bottom:3px}
+.ins-body{font-size:11px;color:var(--color-text-secondary);line-height:1.5}
+.ins-val{font-size:20px;font-weight:500;color:var(--color-text-primary);margin:4px 0 2px}
+.badge{display:inline-block;font-size:10px;padding:2px 7px;border-radius:var(--border-radius-md);margin-right:3px}
+.bg-greed{background:#C0DD97;color:#27500A}
+.bg-fear{background:#FAC775;color:#633806}
+.bg-extfear{background:#F5C4B3;color:#712B13}
+.bg-extgreed{background:#9FE1CB;color:#085041}
+.bg-neutral{background:#D3D1C7;color:#444441}
+.wide-card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1rem;margin-bottom:1rem}
+</style>
+
+<div class="dash">
+<h2 class="sr-only" style="position:absolute;width:1px;height:1px;overflow:hidden">Bitcoin market sentiment vs trader performance dashboard showing PnL, win rates, and trade patterns across fear and greed cycles</h2>
+
+<div class="kpi-grid">
+  <div class="kpi"><div class="kpi-label">Total trades analyzed</div><div class="kpi-val">211,224</div><div class="kpi-sub">32 unique traders</div></div>
+  <div class="kpi"><div class="kpi-label">Total closed PnL</div><div class="kpi-val">$10.25M</div><div class="kpi-sub">Sum of profitable closes</div></div>
+  <div class="kpi"><div class="kpi-label">Overall win rate</div><div class="kpi-val">83.1%</div><div class="kpi-sub">Non-zero PnL trades</div></div>
+  <div class="kpi"><div class="kpi-label">Avg PnL per trade</div><div class="kpi-val">$98.4</div><div class="kpi-sub">Across all sentiment zones</div></div>
+</div>
+
+<div class="section-title">Performance by market sentiment</div>
+
+<div class="charts-row">
+  <div class="chart-card">
+    <div class="chart-title">Average PnL per trade by sentiment</div>
+    <div class="legend">
+      <span><span class="leg-dot" style="background:#3B6D11"></span>Extreme Greed</span>
+      <span><span class="leg-dot" style="background:#639922"></span>Greed</span>
+      <span><span class="leg-dot" style="background:#888780"></span>Neutral</span>
+      <span><span class="leg-dot" style="background:#EF9F27"></span>Fear</span>
+      <span><span class="leg-dot" style="background:#D85A30"></span>Extreme Fear</span>
+    </div>
+    <div class="chart-wrap" style="height:220px"><canvas id="c1" role="img" aria-label="Bar chart of average PnL by sentiment. Fear: $113, Extreme Greed: $130, Greed: $85, Neutral: $71, Extreme Fear: $71">Fear $113, Extreme Greed $130, Greed $85, Neutral $71, Extreme Fear $71</canvas></div>
+  </div>
+  <div class="chart-card">
+    <div class="chart-title">Win rate by sentiment (%)</div>
+    <div class="legend">
+      <span><span class="leg-dot" style="background:#185FA5"></span>Win rate</span>
+    </div>
+    <div class="chart-wrap" style="height:220px"><canvas id="c2" role="img" aria-label="Bar chart showing win rate by sentiment zone">Fear 87%, Extreme Greed 89%, Greed 77%, Neutral 82%, Extreme Fear 76%</canvas></div>
+  </div>
+</div>
+
+<div class="charts-row">
+  <div class="chart-card">
+    <div class="chart-title">Long vs short avg PnL by sentiment</div>
+    <div class="legend">
+      <span><span class="leg-dot" style="background:#5DCAA5"></span>Long</span>
+      <span><span class="leg-dot" style="background:#D85A30"></span>Short</span>
+    </div>
+    <div class="chart-wrap" style="height:220px"><canvas id="c3" role="img" aria-label="Grouped bar chart comparing long and short PnL across sentiment zones">Long vs Short by sentiment</canvas></div>
+  </div>
+  <div class="chart-card">
+    <div class="chart-title">Average loss size by sentiment</div>
+    <div class="legend">
+      <span><span class="leg-dot" style="background:#E24B4A"></span>Avg loss (absolute)</span>
+    </div>
+    <div class="chart-wrap" style="height:220px"><canvas id="c4" role="img" aria-label="Bar chart of average loss magnitude per sentiment zone">Extreme Fear -$257, Fear -$157, Greed -$182, Extreme Greed -$120, Neutral -$122</canvas></div>
+  </div>
+</div>
+
+<div class="section-title">Volume &amp; trade activity</div>
+<div class="wide-card">
+  <div class="chart-title">Trade count distribution by sentiment</div>
+  <div class="chart-wrap" style="height:200px"><canvas id="c5" role="img" aria-label="Donut chart showing percentage of trades per sentiment zone">Fear 27%, Greed 24%, Extreme Greed 20%, Neutral 17%, Extreme Fear 13%</canvas></div>
+</div>
+
+<div class="section-title">Key insights</div>
+<div class="insight-grid">
+  <div class="insight-card">
+    <div class="ins-icon"><i class="ti ti-trending-up" aria-hidden="true"></i></div>
+    <div class="ins-title">Fear = profit signal</div>
+    <div class="ins-val">$113</div>
+    <div class="ins-body">Average trade PnL during Fear zones — highest of all categories and 59% above the Neutral baseline</div>
+  </div>
+  <div class="insight-card">
+    <div class="ins-icon"><i class="ti ti-alert-triangle" aria-hidden="true"></i></div>
+    <div class="ins-title">Greed amplifies losses</div>
+    <div class="ins-val">-$182</div>
+    <div class="ins-body">Avg loss during Greed is the largest — traders chase momentum and oversize positions, leading to bigger drawdowns</div>
+  </div>
+  <div class="insight-card">
+    <div class="ins-icon"><i class="ti ti-arrows-diff" aria-hidden="true"></i></div>
+    <div class="ins-title">Short squeeze in fear</div>
+    <div class="ins-val">$209</div>
+    <div class="ins-body">Short trades during Fear periods earn the highest avg PnL ($209) — contrarian shorts at market bottoms pay off massively</div>
+  </div>
+  <div class="insight-card">
+    <div class="ins-icon"><i class="ti ti-chart-pie" aria-hidden="true"></i></div>
+    <div class="ins-title">Greed drives volume</div>
+    <div class="ins-val">44%</div>
+    <div class="ins-body">Greed + Extreme Greed account for 44% of all trades — traders are most active when sentiment is euphoric</div>
+  </div>
+  <div class="insight-card">
+    <div class="ins-icon"><i class="ti ti-shield-check" aria-hidden="true"></i></div>
+    <div class="ins-title">Extreme greed: best win rate</div>
+    <div class="ins-val">89.2%</div>
+    <div class="ins-body">Highest win rate occurs at Extreme Greed — but with smaller avg profits ($130), suggesting traders take smaller, safer bets in bull euphoria</div>
+  </div>
+  <div class="insight-card">
+    <div class="ins-icon"><i class="ti ti-focus-2" aria-hidden="true"></i></div>
+    <div class="ins-title">Extreme fear: highest losses</div>
+    <div class="ins-val">-$257</div>
+    <div class="ins-body">When markets are in Extreme Fear, losing trades hurt the most — suggesting panic entries with poor risk management</div>
+  </div>
+</div>
+
+<div class="section-title">Optimal sentiment zones — strategy matrix</div>
+<div class="wide-card">
+  <div style="overflow-x:auto">
+    <table style="width:100%;border-collapse:collapse;font-size:12px">
+      <thead>
+        <tr style="border-bottom:0.5px solid var(--color-border-tertiary)">
+          <th style="text-align:left;padding:8px 6px;color:var(--color-text-secondary);font-weight:500">Sentiment zone</th>
+          <th style="text-align:right;padding:8px 6px;color:var(--color-text-secondary);font-weight:500">Avg PnL</th>
+          <th style="text-align:right;padding:8px 6px;color:var(--color-text-secondary);font-weight:500">Win rate</th>
+          <th style="text-align:right;padding:8px 6px;color:var(--color-text-secondary);font-weight:500">Avg loss</th>
+          <th style="text-align:right;padding:8px 6px;color:var(--color-text-secondary);font-weight:500">Best direction</th>
+          <th style="text-align:right;padding:8px 6px;color:var(--color-text-secondary);font-weight:500">Strategy signal</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr style="border-bottom:0.5px solid var(--color-border-tertiary)">
+          <td style="padding:8px 6px"><span class="badge bg-extfear">Extreme Fear</span></td>
+          <td style="text-align:right;padding:8px 6px;font-weight:500">$71</td>
+          <td style="text-align:right;padding:8px 6px">76.2%</td>
+          <td style="text-align:right;padding:8px 6px;color:#A32D2D">-$257</td>
+          <td style="text-align:right;padding:8px 6px">Short ($119)</td>
+          <td style="text-align:right;padding:8px 6px;font-size:11px;color:var(--color-text-secondary)">Selective entry, tight stops</td>
+        </tr>
+        <tr style="border-bottom:0.5px solid var(--color-border-tertiary)">
+          <td style="padding:8px 6px"><span class="badge bg-fear">Fear</span></td>
+          <td style="text-align:right;padding:8px 6px;font-weight:500">$113</td>
+          <td style="text-align:right;padding:8px 6px">87.3%</td>
+          <td style="text-align:right;padding:8px 6px;color:#A32D2D">-$157</td>
+          <td style="text-align:right;padding:8px 6px">Short ($209)</td>
+          <td style="text-align:right;padding:8px 6px;font-size:11px;color:#085041">Best overall zone</td>
+        </tr>
+        <tr style="border-bottom:0.5px solid var(--color-border-tertiary)">
+          <td style="padding:8px 6px"><span class="badge bg-neutral">Neutral</span></td>
+          <td style="text-align:right;padding:8px 6px;font-weight:500">$71</td>
+          <td style="text-align:right;padding:8px 6px">82.4%</td>
+          <td style="text-align:right;padding:8px 6px;color:#A32D2D">-$122</td>
+          <td style="text-align:right;padding:8px 6px">Long ($53)</td>
+          <td style="text-align:right;padding:8px 6px;font-size:11px;color:var(--color-text-secondary)">Moderate, balanced</td>
+        </tr>
+        <tr style="border-bottom:0.5px solid var(--color-border-tertiary)">
+          <td style="padding:8px 6px"><span class="badge bg-greed">Greed</span></td>
+          <td style="text-align:right;padding:8px 6px;font-weight:500">$85</td>
+          <td style="text-align:right;padding:8px 6px">76.9%</td>
+          <td style="text-align:right;padding:8px 6px;color:#A32D2D">-$182</td>
+          <td style="text-align:right;padding:8px 6px">Long ($89)</td>
+          <td style="text-align:right;padding:8px 6px;font-size:11px;color:#633806">Caution — largest losses</td>
+        </tr>
+        <tr>
+          <td style="padding:8px 6px"><span class="badge bg-extgreed">Extreme Greed</span></td>
+          <td style="text-align:right;padding:8px 6px;font-weight:500">$130</td>
+          <td style="text-align:right;padding:8px 6px">89.2%</td>
+          <td style="text-align:right;padding:8px 6px;color:#A32D2D">-$120</td>
+          <td style="text-align:right;padding:8px 6px">Long ($62)</td>
+          <td style="text-align:right;padding:8px 6px;font-size:11px;color:#085041">High win rate, manage size</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+const sentLabels = ['Extreme Fear','Fear','Neutral','Greed','Extreme Greed'];
+const bgColors = ['#F0997B','#EF9F27','#B4B2A9','#97C459','#5DCAA5'];
+const isDark = matchMedia('(prefers-color-scheme: dark)').matches;
+const gridC = isDark ? 'rgba(255,255,255,.07)' : 'rgba(0,0,0,.07)';
+const textC = isDark ? '#aaa' : '#666';
+const baseOpts = {responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{color:gridC},ticks:{color:textC,font:{size:10}}},y:{grid:{color:gridC},ticks:{color:textC,font:{size:10}}}}};
+
+new Chart(document.getElementById('c1'),{
+  type:'bar',
+  data:{labels:sentLabels,datasets:[{label:'Avg PnL',data:[71,113,71,85,130],backgroundColor:bgColors,borderWidth:0,borderRadius:4}]},
+  options:{...baseOpts,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>'$'+c.raw}}},scales:{x:{grid:{color:gridC},ticks:{color:textC,font:{size:10}}},y:{grid:{color:gridC},ticks:{color:textC,font:{size:10},callback:v=>'$'+v}}}}
+});
+
+new Chart(document.getElementById('c2'),{
+  type:'bar',
+  data:{labels:sentLabels,datasets:[{label:'Win rate',data:[76.2,87.3,82.4,76.9,89.2],backgroundColor:'#378ADD',borderWidth:0,borderRadius:4}]},
+  options:{...baseOpts,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.raw+'%'}}},scales:{x:{grid:{color:gridC},ticks:{color:textC,font:{size:10}}},y:{min:60,max:100,grid:{color:gridC},ticks:{color:textC,font:{size:10},callback:v=>v+'%'}}}}
+});
+
+new Chart(document.getElementById('c3'),{
+  type:'bar',
+  data:{
+    labels:sentLabels,
+    datasets:[
+      {label:'Long',data:[79,84,53,89,62],backgroundColor:'#5DCAA5',borderWidth:0,borderRadius:3},
+      {label:'Short',data:[119,209,94,54,29],backgroundColor:'#D85A30',borderWidth:0,borderRadius:3}
+    ]
+  },
+  options:{...baseOpts,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.dataset.label+': $'+c.raw}}},scales:{x:{grid:{color:gridC},ticks:{color:textC,font:{size:10}}},y:{grid:{color:gridC},ticks:{color:textC,font:{size:10},callback:v=>'$'+v}}}}
+});
+
+new Chart(document.getElementById('c4'),{
+  type:'bar',
+  data:{labels:sentLabels,datasets:[{label:'Avg loss',data:[257,157,122,182,120],backgroundColor:'#F09595',borderWidth:0,borderRadius:4}]},
+  options:{...baseOpts,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>'-$'+c.raw}}},scales:{x:{grid:{color:gridC},ticks:{color:textC,font:{size:10}}},y:{grid:{color:gridC},ticks:{color:textC,font:{size:10},callback:v=>'$'+v}}}}
+});
+
+new Chart(document.getElementById('c5'),{
+  type:'doughnut',
+  data:{
+    labels:['Fear (28%)','Greed (24%)','Extreme Greed (20%)','Neutral (17%)','Extreme Fear (13%)'],
+    datasets:[{data:[28,24,20,17,13],backgroundColor:['#EF9F27','#97C459','#5DCAA5','#B4B2A9','#F0997B'],borderWidth:0}]
+  },
+  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'right',labels:{color:textC,font:{size:11},boxWidth:12,padding:12}},tooltip:{callbacks:{label:c=>c.label}}}}
+});
+</script>
